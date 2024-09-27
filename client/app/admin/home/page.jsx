@@ -4,25 +4,32 @@ import Link from "next/link";
 
 const HomePage = () => {
   const [showTransactionDropdown, setShowTransactionDropdown] = useState(false);
+  const [showMaintanceDropdown, setShowMaintanceDropdown] = useState(false);
 
-  const toggleMaintainenceDropdown = () => {
+
+  const toggleTransactionDropDown = () => {
     setShowTransactionDropdown(!showTransactionDropdown);
+  };
+  const toggleMaintainenceDropDown = () => {
+
+    setShowMaintanceDropdown(!showMaintanceDropdown);
   };
 
   return (
     <>
       <nav className="bg-rose-700 px-80 py-3">
         <ul className="flex flex-row justify-between">
-          <Link href="/admin/maintainence">
-            <li className="text-white font-semibold cursor-pointer hover:text-slate-200">
-              Maintainence
-            </li>
-          </Link>
+
+          <li className="text-white font-semibold cursor-pointer hover:text-slate-200"
+            onClick={() => toggleMaintainenceDropDown()}>
+            Maintainence
+          </li>
+
           <li className="text-white font-semibold cursor-pointer hover:text-slate-200">
             Report
           </li>
           <li
-            onClick={() => toggleMaintainenceDropdown()}
+            onClick={() => toggleTransactionDropDown()}
             className="text-white font-semibold cursor-pointer hover:text-slate-200"
           >
             Transaction
@@ -33,6 +40,7 @@ const HomePage = () => {
         </ul>
       </nav>
       {showTransactionDropdown && <TransactionDropDown />}
+      {showMaintanceDropdown && <MaintainenceDropdown/>}
       <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-5">
         <div className="overflow-x-auto w-full max-w-4xl">
           <table className="table-auto w-full bg-white shadow-md rounded-lg">
@@ -91,5 +99,23 @@ const TransactionDropDown = () => {
     </ul>
   );
 };
+
+const MaintainenceDropdown = () => {
+  return (
+    <ul className="text-white fixed bg-rose-500 ml-[17rem] mt-1 rounded-md py-2">
+      <Link href={"/admin/maintainence/usermangaement"}>
+        <li className="hover:bg-rose-700 px-5 cursor-pointer py-1">
+          User Management
+        </li>
+      </Link>
+      <Link href={"/admin/maintainence/books"}>
+        <li className="hover:bg-rose-700 px-5 cursor-pointer py-1">
+          Books
+        </li>
+      </Link>
+
+    </ul>
+  )
+}
 
 export default HomePage;

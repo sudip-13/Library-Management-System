@@ -42,11 +42,20 @@ export default function Home() {
           body: JSON.stringify(loginDetails),
         });
 
-        // Only parse the response JSON if the request was successful
         if (response.ok) {
           const data = await response.json();
           console.log(data);
-          setUserID(data)
+
+          // Assuming the user ID is in data.userID
+          if (isUserLogin) {
+            if (data.user.userId) {
+              setUserID(data.user.userId);
+              localStorage.setItem("userID", data.user.userId); // Save user ID with a key
+            } else {
+              throw new Error("User ID not found in response");
+            }
+          }
+
           toast.success(`${isUserLogin ? "User" : "Admin"} login successful`, {
             position: "top-center",
             autoClose: 2000,
@@ -54,7 +63,8 @@ export default function Home() {
           });
           router.push(redirectPath);
         } else {
-          toast.error("Incorrect login credentials", {
+          const errorData = await response.json();
+          toast.error(errorData.message || "Incorrect login credentials", {
             position: "top-center",
             autoClose: 2000,
             theme: "dark",
@@ -62,7 +72,7 @@ export default function Home() {
         }
       } catch (error) {
         console.error("Login failed:", error);
-        toast.error("Something went wrong, Please try again", {
+        toast.error("Something went wrong, please try again", {
           position: "top-center",
           autoClose: 2000,
           theme: "dark",

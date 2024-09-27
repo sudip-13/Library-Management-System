@@ -1,15 +1,15 @@
 "use client";
 import React, { useState, useCallback, useEffect } from "react";
-import { useUser } from "@/provider/UserContext";
 
 export default function ReturnBook() {
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState([]); // Initialize as an empty array
   const [selectedBook, setSelectedBook] = useState(null);
   const [remarks, setRemarks] = useState("");
-  const { userID } = useUser();
+  const userID = localStorage.getItem("userID");
 
-  // Fetch all issued books for the logged-in user
+
   const fetchIssuedBooks = useCallback(async () => {
+    console.log(userID);
     try {
       const response = await fetch(
         `http://localhost:5051/user/issued-book/${userID}`,
@@ -20,14 +20,27 @@ export default function ReturnBook() {
           method: "GET",
         }
       );
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
       const data = await response.json();
-      setBooks(data);
+      console.log(data);
+
+
+      if (Array.isArray(data.issuedBooks)) {
+        setBooks(data.issuedBooks);
+      } else {
+        console.error("Expected an array but received:", data.issuedBooks);
+        setBooks([]);
+      }
     } catch (err) {
       console.error("Error fetching issued books:", err);
     }
   }, [userID]);
 
-  // Handle book return
+
   const returnIssueBook = async () => {
     if (!selectedBook) {
       return;
@@ -68,7 +81,7 @@ export default function ReturnBook() {
           Return Book
         </h1>
 
-        {/* Book dropdown */}
+
         <div className="mb-4">
           <label className="block text-gray-700 font-medium mb-2">
             Select Book
@@ -83,7 +96,7 @@ export default function ReturnBook() {
             }
           >
             <option value="">-- Select a book --</option>
-            {books?.map((book) => (
+            {books.map((book) => (
               <option key={book.serialNumber} value={book.serialNumber}>
                 {book.bookName} (Issued: {book.issueDate})
               </option>
@@ -91,7 +104,7 @@ export default function ReturnBook() {
           </select>
         </div>
 
-        {/* Remarks input */}
+
         <div className="mb-6">
           <label className="block text-gray-700 font-medium mb-2">
             Remarks
@@ -105,7 +118,7 @@ export default function ReturnBook() {
           ></textarea>
         </div>
 
-        {/* Return Book button */}
+
         <button
           className="w-full bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition duration-300"
           onClick={returnIssueBook}

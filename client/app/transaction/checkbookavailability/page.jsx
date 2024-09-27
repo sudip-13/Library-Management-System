@@ -54,7 +54,7 @@ export default function CheckBook() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        userId: userID.user.userId,
+        userId: localStorage.getItem("userID"),
         bookName: selectedBook.bookName,
         returnDate: returnDate,
         remarks: remarks,
