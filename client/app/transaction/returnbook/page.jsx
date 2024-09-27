@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 
 export default function ReturnBook() {
-  const [books, setBooks] = useState([]); // Initialize as an empty array
+  const [books, setBooks] = useState([]); 
   const [selectedBook, setSelectedBook] = useState(null);
   const [remarks, setRemarks] = useState("");
   const userID = localStorage.getItem("userID");
